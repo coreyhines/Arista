@@ -30,7 +30,7 @@
 #
 # Bug Alert Database Updater
 #
-#    Version 1.0 2/23/2017
+#    Version .1 2/23/2017
 #    Written by:
 #       Corey Hines, Arista Networks
 #
