@@ -49,13 +49,17 @@
 
 
    INSTALLATION
+   copy this script to /mnt/flash on the CVX EOS VM.
    change values of username and password to a valid www.arista.com account
+   run the script from bash to install the alertbase database
+   run the script subsequently from the EOS scheduler for periodic update checks
 
    RFEs
    Add error handling, any error handling at all ;-)
    Add ability to specify username and password as ARGV0/1 for running interactively and not storing password in script
    Add some kind of progress indicator and/or send some loggging output to STDOUT and/or system log
    Add code with eAPI or python ssh library to copy AlertBase.json to all CVX cluster members
+   Add logging to system log
 """
 __author__ = 'chines'
 
