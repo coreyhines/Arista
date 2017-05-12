@@ -27,17 +27,18 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+# BugAlertUpdater
 #
-# Bug Alert Database Updater
-#
-#    Version .1 2/23/2017
+#    Version 1.1.0 5/12/2017
 #    Written by:
 #       Corey Hines, Arista Networks
 #
-#
 #    Revision history:
+#       1.1.0 Added Alertbase import support. Key feature to complete the automation
+#       1.0 deprecated (changelog: changed versioning to more modest starting point)
 #       .1 - Minor edits
 #       .2 - Initial version tested on EOS (CVX) 4.18.0F
+#                FIXED BUG base64 string issue
 
 """
    DESCRIPTION
@@ -49,24 +50,28 @@
 
 
    INSTALLATION
-   copy this script to /mnt/flash on the CVX EOS VM.
    change values of username and password to a valid www.arista.com account
-   run the script from bash to install the alertbase database
-   run the script subsequently from the EOS scheduler for periodic update checks
 
    RFEs
    Add error handling, any error handling at all ;-)
    Add ability to specify username and password as ARGV0/1 for running interactively and not storing password in script
    Add some kind of progress indicator and/or send some loggging output to STDOUT and/or system log
    Add code with eAPI or python ssh library to copy AlertBase.json to all CVX cluster members
-   Add logging to system log
 """
 __author__ = 'chines'
 
 import base64, json, warnings, requests
+import subprocess
+import os
+import shutil
+import optparse
+import QuickTrace
+import Tac
+import Tracing
+from AlertBaseImporter import AlertBaseImporter
 
-username = 'CHANGEME'
-password = 'CHANGEME'
+username = 'chines@arista.com'
+password = '8%uC*t42C48S0&$j'
 
 string = username + ':' + password
 creds = (base64.b64encode(string.encode()))
@@ -81,16 +86,20 @@ result = requests.post(url, data=json.dumps(jsonpost))
 
 web_data = json.loads(result.text)
 web_data_final = result.text
-
+alertBaseFile = '/mnt/flash/AlertBase.json'
+sysname = 'ar'
 
 try:
     current_json = open('/mnt/flash/AlertBase.json', 'r')
     local_data = json.loads(current_json.read())
 except:
-    print "Bug Alert Databse does not exist. Installing..."
+    print "Bug Alert Databse does not exist. Downloading..."
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
-    alertdbfile.close   
+    alertdbfile.close()
+    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    alertBaseImporter.loadAlertBase()
+    print('\n\n Bug Alert Database successfully imported\n')
     exit(0)
 
 current_version = local_data['genId']
@@ -102,12 +111,20 @@ print('----------' + '\t' + '------------' + '\t' + '---------------------------
 print('local version' + '\t' + local_data['releaseDate'] + '\t' + current_version).expandtabs(18)
 print('web version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
-if current_version == web_version:
-    print "\nBugAlert database is up to date BUZZ OFF\n"
-    exit(0)
-else:    
-    print "\nUpdating BugAlert database!\n"
+if current_version != web_version:
+    print "\nUpdating BugAlert database file!\n"
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
-    alertdbfile.close
-exit(0)
+    alertdbfile.close()
+    try:
+        alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+        alertBaseImporter.loadAlertBase()
+        print('\n\n Bug Alert Database successfully imported\n')
+    except:
+        print('Bug Alert Database import failed!')
+else:
+    print "\nBugAlert database is up to date BUZZ OFF\n"
+    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    alertBaseImporter.loadAlertBase()
+    print('\n\n Bug Alert Database successfully imported\n')
+    exit(0)
