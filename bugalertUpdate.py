@@ -50,7 +50,8 @@
 
 
    INSTALLATION
-   change values of username and password to a valid www.arista.com account
+   1. Copy the script to /mnt/flash on CVX VM
+   2. change values of username and password to a valid www.arista.com account
 
    RFEs
    Add error handling, any error handling at all ;-)
