@@ -56,6 +56,8 @@ __author__ = 'chines'
 import base64, json, warnings, requests
 import subprocess
 import os
+import sys
+import cStringIO
 import shutil
 import optparse
 import QuickTrace
@@ -66,6 +68,9 @@ from AlertBaseImporter import AlertBaseImporter
 username = 'CHANGEME'
 password = 'CHANGEME'
 importdb = False
+
+stdout_ = sys.stdout            ### Trying to use this later to redirect output of the database import to cut the noise. This isn't working yet.
+stream = cStringIO.StringIO()
 
 string = username + ':' + password
 creds = (base64.b64encode(string.encode()))
@@ -83,6 +88,7 @@ web_data_final = result.text
 alertBaseFile = '/mnt/flash/AlertBase.json'
 sysname = 'ar'
 
+
 try:
     current_json = open('/mnt/flash/AlertBase.json', 'r')
     local_data = json.loads(current_json.read())
@@ -91,10 +97,9 @@ except:
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
-    importdb = True
-    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-    #alertBaseImporter.loadAlertBase()
-    #print('\n\n Bug Alert Database successfully imported\n')
+    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    alertBaseImporter.loadAlertBase()
+    print('\n\n Bug Alert Database successfully imported\n')
     exit(0)
 
 current_version = local_data['genId']
@@ -112,26 +117,23 @@ if current_version != web_version:
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     importdb = True
-    #try:
-    #    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-    #    alertBaseImporter.loadAlertBase()
-    #    print('\n\n Bug Alert Database successfully imported\n')
-    #except:
-    #    print('Bug Alert Database import failed!')
 else:
-    print('\n\n Bug Alert Database is up to date. Exiting\n')
-    #print "\nBugAlert database is up to date BUZZ OFF\n"
-    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-    #alertBaseImporter.loadAlertBase()
-    #print('\n\n Bug Alert Database successfully imported\n')
+    importdb = False
+    print('\n\n Bug Alert Database is up to date.\n')
+
 if importdb == True:
-    print('\n\n Bug Alert Database was updated, importing new entries...\n\n\n')
+    print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
+    sys.stdout = stream
     try:
       alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
       alertBaseImporter.loadAlertBase()
+      sys.stdout = stdout_
+      result = stream.getvalue()
       print('\n\n Bug Alert Database successfully imported\n')
     except:
-        print('Bug Alert Database import failed!') 
+        sys.stdout = stdout
+        result = stream.getvalue()
+        print('Bug Alert Database import failed!')
         exit (1)
 else:
     print('\n\n Bug Alert Database import is not required\n')
