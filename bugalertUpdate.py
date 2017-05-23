@@ -29,35 +29,27 @@
 #
 # BugAlertUpdater
 #
-#    Version 1.1.0 5/12/2017
 #    Written by:
 #       Corey Hines, Arista Networks
 #
-#    Revision history:
-#       1.1.0 Added Alertbase import support. Key feature to complete the automation
-#       1.0 deprecated (changelog: changed versioning to more modest starting point)
-#       .1 - Minor edits
-#       .2 - Initial version tested on EOS (CVX) 4.18.0F
-#                FIXED BUG base64 string issue
-
 """
-   DESCRIPTION
-   A Python script for updating the AlertBase.json file on CVX running EOS.
-   Script can be run manually, or using a scheduler to automatically check www.arista.com
-   for database updates for the CVX Bugalerts feature.
+DESCRIPTION
+A Python script for updating the AlertBase.json file on CVX running EOS.
+Script can be run manually, or using a scheduler to automatically check www.arista.com
+for database updates for the CVX Bugalerts feature.
 
-   To learn more about BugAlerts see: https://eos.arista.com/eos-4-17-0f/bug-alerts/
+To learn more about BugAlerts see: https://eos.arista.com/eos-4-17-0f/bug-alerts/
 
 
-   INSTALLATION
-   1. Copy the script to /mnt/flash on CVX VM
-   2. change values of username and password to a valid www.arista.com account
+INSTALLATION
+1. Copy the script to /mnt/flash on CVX VM
+2. change values of username and password to a valid www.arista.com account
 
-   RFEs
-   Add error handling, any error handling at all ;-)
-   Add ability to specify username and password as ARGV0/1 for running interactively and not storing password in script
-   Add some kind of progress indicator and/or send some loggging output to STDOUT and/or system log
-   Add code with eAPI or python ssh library to copy AlertBase.json to all CVX cluster members
+RFEs
+Add error handling, any error handling at all ;-)
+Add ability to specify username and password as ARGV0/1 for running interactively and not storing password in script
+Add some kind of progress indicator and/or send some loggging output to STDOUT and/or system log
+Add code with eAPI or python ssh library to copy AlertBase.json to all CVX cluster members
 """
 __author__ = 'chines'
 
@@ -71,8 +63,9 @@ import Tac
 import Tracing
 from AlertBaseImporter import AlertBaseImporter
 
-username = 'chines@arista.com'
-password = '8%uC*t42C48S0&$j'
+username = 'CHANGEME'
+password = 'CHANGEME'
+importdb = False
 
 string = username + ':' + password
 creds = (base64.b64encode(string.encode()))
@@ -94,13 +87,14 @@ try:
     current_json = open('/mnt/flash/AlertBase.json', 'r')
     local_data = json.loads(current_json.read())
 except:
-    print "Bug Alert Databse does not exist. Downloading..."
+    print "Bug Alert Database does not exist. Downloading..."
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
-    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-    alertBaseImporter.loadAlertBase()
-    print('\n\n Bug Alert Database successfully imported\n')
+    importdb = True
+    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    #alertBaseImporter.loadAlertBase()
+    #print('\n\n Bug Alert Database successfully imported\n')
     exit(0)
 
 current_version = local_data['genId']
@@ -117,15 +111,29 @@ if current_version != web_version:
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
-    try:
-        alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-        alertBaseImporter.loadAlertBase()
-        print('\n\n Bug Alert Database successfully imported\n')
-    except:
-        print('Bug Alert Database import failed!')
+    importdb = True
+    #try:
+    #    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    #    alertBaseImporter.loadAlertBase()
+    #    print('\n\n Bug Alert Database successfully imported\n')
+    #except:
+    #    print('Bug Alert Database import failed!')
 else:
-    print "\nBugAlert database is up to date BUZZ OFF\n"
-    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-    alertBaseImporter.loadAlertBase()
-    print('\n\n Bug Alert Database successfully imported\n')
-    exit(0)
+    print('\n\n Bug Alert Database is up to date. Exiting\n')
+    #print "\nBugAlert database is up to date BUZZ OFF\n"
+    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    #alertBaseImporter.loadAlertBase()
+    #print('\n\n Bug Alert Database successfully imported\n')
+if importdb == True:
+    print('\n\n Bug Alert Database was updated, importing new entries...\n\n\n')
+    try:
+      alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+      alertBaseImporter.loadAlertBase()
+      print('\n\n Bug Alert Database successfully imported\n')
+    except:
+        print('Bug Alert Database import failed!') 
+        exit (1)
+else:
+    print('\n\n Bug Alert Database import is not required\n')
+
+exit(0)
