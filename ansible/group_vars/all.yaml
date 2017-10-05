@@ -1,8 +1,0 @@
-eos_api:
-  host: '{{ inventory_hostname }}'
-  username: admin
-  password: bone8181
-  authorize: true
-  use_ssl: yes
-  transport: eapi
-  validate_certs: false

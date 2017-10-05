@@ -1,7 +1,0 @@
----
-- hosts: fedora25-boxes
-#- hosts: rpi3-2.lan
-  remote_user: root
-  tasks:
-    - name: DNF Update
-      dnf: name=* state=latest
