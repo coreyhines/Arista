@@ -14,12 +14,6 @@
       notify:
       - start nginx
 
-#    - name: uninstall ntopng
-#      apt: name=ntopng state=removed
-
-#    - name: uninstall ntopng-data
-#      apt: name=ntopng-data state=removed
-
     - name: Install ntopng
       apt: name=ntopng state=latest
       notify:
