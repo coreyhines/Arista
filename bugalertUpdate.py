@@ -125,11 +125,11 @@ if importdb == True:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
     sys.stdout = stream
     try:
-      alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
-      alertBaseImporter.loadAlertBase()
-      sys.stdout = stdout_
-      result = stream.getvalue()
-      print('\n\n Bug Alert Database successfully imported\n')
+        alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+        alertBaseImporter.loadAlertBase()
+        sys.stdout = stdout_
+        result = stream.getvalue()
+        print('\n\n Bug Alert Database successfully imported\n')
     except:
         sys.stdout = stdout_
         result = stream.getvalue()

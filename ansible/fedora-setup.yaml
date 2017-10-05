@@ -1,0 +1,81 @@
+---
+#- name: apply common configuration to all nodes
+#- hosts: rpi3-5.lan
+- hosts: fedora25-boxes
+  remote_user: root
+  roles: 
+    - { role: jhu-sheridan-libraries.ntp, ntpservers: [ '0.pool.ntp.org', 'pool.ntp.org' ] }
+  tasks:
+    - name: Install nginx  
+      dnf: name=nginx state=latest
+      notify:
+      - start nginx
+
+    - name: Install findutils
+      dnf: name=findutils state=latest
+
+    - name: Install git
+      dnf: name=git state=latest
+
+    - name: Install ntp
+      dnf: name=ntp state=latest
+
+    - name: Install ntpdate
+      dnf: name=ntpdate state=latest
+
+    - name: Install lldpad
+      dnf: name=lldpad state=latest
+      notify:
+      - start lldpad
+
+    - name: Install open-vm-tools
+      dnf: name=open-vm-tools state=latest
+      notify:
+      - start open-vm-tools
+
+    - name: Install open-vm-tools-devel
+      dnf: name=open-vm-tools-devel state=latest
+
+
+#    - name: Transfer the config-lldp script
+#      copy: src='/Users/chines/Cloudstation/Visual Studio/ansible/scripts/config-lldp' dest='/root/config-lldp' mode=0755
+#      tags:
+#         - packages
+#
+#    - name: Execute the script
+#      local_action: command sh /root/config-lldp
+#      tags:
+#         - packages
+    - name: Transfer the config-lldp script
+      script: /etc/ansible/scripts/config-lldp 
+      tags:
+         - packages
+
+    - name: Transfer the getlldp script
+      script: /etc/ansible/scripts/getlldp 
+      tags:
+         - packages
+#    - name: Transfer the getlldp script
+#      copy: src='/Users/chines/Cloudstation/Visual Studio/ansible/scripts/getlldp' dest=/root/getlldp mode=0755
+#      tags:
+#         - packages
+#
+#    - name: Execute the script
+#      local_action: command sh /root/getlldp
+#      tags:
+#         - packages
+
+
+
+  handlers:
+    - name: start nginx
+      service: name=nginx state=started
+
+    - name: start ntp
+      service: name=ntp state=started
+
+    - name: start lldpad
+      service: name=lldpad state=started
+
+    - name: start open-vm-tools
+      service: name=open-vm-tools state=started

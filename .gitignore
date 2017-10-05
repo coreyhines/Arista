@@ -1,0 +1,15 @@
+go/bin/godef
+go/bin/goreturns
+go/pkg/darwin_amd64/github.com/nu7hatch/gouuid.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/ast.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/parser.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/printer.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/scanner.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/token.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/go/types.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/vendor/9fans.net/go/acme.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/vendor/9fans.net/go/plan9.a
+go/pkg/darwin_amd64/github.com/rogpeppe/godef/vendor/9fans.net/go/plan9/client.a
+go/pkg/darwin_amd64/github.com/sqs/goreturns/returns.a
+go/pkg/darwin_amd64/golang.org/x/tools/imports.a
+go/pkg/darwin_amd64/golang.org/x/tools/go/ast/astutil.a

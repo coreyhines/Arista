@@ -1,0 +1,12 @@
+---
+#- hosts: cluster01
+- hosts: pi.hole
+  remote_user: root
+#  roles: 
+#  - bennojoy.ntp
+  tasks:
+    - name: Update apt-cache
+      apt: update_cache=yes
+
+    - name: Upgrade Packages
+      apt: upgrade=yes
