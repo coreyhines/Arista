@@ -1,6 +1,6 @@
 ---
 - name: apply common configuration to all nodes
-##- hosts: rpi3-5.lan
+#- hosts: rpi3-5.lan
   hosts: cluster01
   remote_user: root
   roles: 
