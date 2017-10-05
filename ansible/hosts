@@ -1,5 +1,0 @@
-[cluster01]
-rpi3-[1:5].lan
-
-[fedora25-boxes]
-fedora25-0[1:3].lan
