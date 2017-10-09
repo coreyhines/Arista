@@ -88,7 +88,7 @@ web_data_final = result.text
 alertBaseFile = '/mnt/flash/AlertBase.json'
 sysname = 'ar'
 
-
+##
 try:
     current_json = open('/mnt/flash/AlertBase.json', 'r')
     local_data = json.loads(current_json.read())
