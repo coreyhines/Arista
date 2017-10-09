@@ -57,7 +57,7 @@ import base64, json, warnings, requests
 # import subprocess
 # import os
 import sys
-# import cStringIO
+import cStringIO
 # import shutil
 # import optparse
 # import QuickTrace
