@@ -99,7 +99,7 @@ except:
     alertdbfile.close()
     alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
     alertBaseImporter.loadAlertBase()
-    print('\n\n Bug Alert Database successfully imported\n')
+    print('\n\n Bug Alert Database successfully created and imported\n')
     exit(0)
 
 current_version = local_data['genId']
@@ -118,7 +118,9 @@ if current_version != web_version:
     alertdbfile.close()
     importdb = True
 else:
-    importdb = False
+    # setting to True here regardless until bug is 
+    # resolved that results in entries not being imported
+    importdb = True
     print('\n\n Bug Alert Database is up to date.\n')
 
 if importdb == True:
