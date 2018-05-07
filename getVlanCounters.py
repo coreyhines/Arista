@@ -57,5 +57,5 @@ chines@mbp-arista-13122[~]$ ./getVlanCounters.py
 import pyeapi
 from pprint import pprint as pp
 
-node = pyeapi.connect_to('7150-01')
+node = pyeapi.connect_to('7280-01')
 pp(node.enable('show vlan counters'))
