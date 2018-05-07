@@ -13,6 +13,7 @@
 # and they can also receive frames and respond as a bridge at L2
 
 # Author: Corey Hines Systems Engineer chines@arista.com
+# Initial Git commit 7 May 2018
 
 # Test whether the startup-config exists and that it is greater than 0 length
 # in other words the file is not empty
