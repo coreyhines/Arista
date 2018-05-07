@@ -14,7 +14,7 @@
 
 # Author: Corey Hines Systems Engineer chines@arista.com
 # Initial Git commit 7 May 2018
-
+#
 # Test whether the startup-config exists and that it is greater than 0 length
 # in other words the file is not empty
 if [ -s /mnt/flash/startup-config ]
