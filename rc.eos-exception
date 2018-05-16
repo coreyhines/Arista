@@ -2,7 +2,7 @@
 
 #logging will appear in /var/log/Eosinit despite the logger commands below
 
-# EOS boot modifications to protect against inband optical network intereference 
+# EOS boot modifications to protect against inband optical network intereference
 # while using DANZ in bidi environments
 
 # To document the problem, in bidi tapping applications
@@ -18,30 +18,30 @@
 # Test whether the startup-config exists and that it is greater than 0 length
 # in other words the file is not empty
 if [ -s /mnt/flash/startup-config ]
-    then
-        echo ""
-        echo "****************************************************************"
-        echo "startup-config exists and is not empty... evaluating contents"
-        echo "****************************************************************"
-        echo ""
-    else
-        echo ""
-        echo "******************************************************************"
-        echo "startup-config is empty or does not exist! Restoring default configuration"
-        echo "default config will also be evaluated for sanity"
-        echo "******************************************************************"
-        echo ""
-        # The startup config has been removed or exists and is empty,
-        # copy the "golden" config from the hidden file ".hidden-gold-config"
-        # This could be a known good config, or it could be a special LOCKED DOWN
-        # config. As an example, this config would have the 'unidirectional receive-only' 
-        # command applied to all ports, it would also ensure that the tap agg mode exclusive stanza is set
-        # it would also be wise to have the MA1 config and turn on eAPI so the device can be 
-        # evaluated and returned to service via CVP 
-        cp /mnt/flash/.hidden-gold-config /mnt/flash/startup-config
+then
+    echo ""
+    echo "****************************************************************"
+    echo "startup-config exists and is not empty... evaluating contents"
+    echo "****************************************************************"
+    echo ""
+else
+    echo ""
+    echo "******************************************************************"
+    echo "startup-config is empty or does not exist! Restoring default configuration"
+    echo "default config will also be evaluated for sanity"
+    echo "******************************************************************"
+    echo ""
+    # The startup config has been removed or exists and is empty,
+    # copy the "golden" config from the hidden file ".hidden-gold-config"
+    # This could be a known good config, or it could be a special LOCKED DOWN
+    # config. As an example, this config would have the 'unidirectional receive-only'
+    # command applied to all ports, it would also ensure that the tap agg mode exclusive stanza is set
+    # it would also be wise to have the MA1 config and turn on eAPI so the device can be
+    # evaluated and returned to service via CVP
+    cp /mnt/flash/.hidden-gold-config /mnt/flash/startup-config
 fi
 
-# setup variables for the startup-config file and a regex to test for 
+# setup variables for the startup-config file and a regex to test for
 # tap agg exclusive mode stanza
 # in testing 'exclusive' was changed to 'elusive' triggering
 # the exception state. Exception state is also triggered if the stanza
@@ -56,7 +56,7 @@ declare regex="tap\sagg.*\n\s+mode\sexclusive"
 # if not we should create the file and set its contents
 # potentially simpler is just clobber the zerotouch-config file with the above contents
 # on every boot
-# This is an additional safeguard, since this script will not let the system 
+# This is an additional safeguard, since this script will not let the system
 # have an empty or non-existent startu-config we should never go into ZTP mode
 # however, this is a failsafe we will add promptly
 
@@ -66,34 +66,34 @@ declare file_content=$( cat "${file}" )
 # look for matches of the regex pattern in the startup-config file contents
 # if the tap aggregation mode exclusive stanza exists, then the config looks sane
 if [[ " $file_content " =~ $regex ]]
-    then
-        echo ""
-        echo "****************************************************************"
-        echo "startup-config tap agg mode present, config appears to be sane"
-        echo "****************************************************************"
-        echo ""
-        /usr/bin/logger -sf /var/log/messages -i -p 7 "Config appears to be sane"
-    else
-        echo ""
-        echo "****************************************************************"
-        echo "startup-config DOES NOT HAVE tap agg mode commands"
-        echo "THIS DEVICE WILL NOW ENTER EXCEPTION BOOT MODE"
-        echo "CURRENT POSTURE: copy default config.. again"
-        echo "****************************************************************"
-        echo ""
-        # At this point we have verified that the startup-config exists
-        # At this point we are in EXCEPTION because even the hidden gold config appears to
-        # be missing the tap agg mode exclusive stanza. In this case we will copy the hidden config 
-        # and reboot. 
-        # Note: As written this could result in a reboot loop
-        # this can be changed but it is ultimately better than interfering and can be stopped 
-        # with console access
-        # One possible alteration here is a cat << EOF approach that creates a default config
-        # that is even more stripped down than the so called hidden-gold-config
-        /usr/bin/logger -sf /var/log/messages -i -p 7 "The Configuration DOES NOT appear to be sane"
-        /usr/bin/logger -sf /var/log/messages -i -p 7 "Copying default config and rebooting"
-        cp /mnt/flash/.hidden-gold-config /mnt/flash/startup-config
-        /sbin/reboot
+then
+    echo ""
+    echo "****************************************************************"
+    echo "startup-config tap agg mode present, config appears to be sane"
+    echo "****************************************************************"
+    echo ""
+    /usr/bin/logger -sf /var/log/messages -i -p 7 "Config appears to be sane"
+else
+    echo ""
+    echo "****************************************************************"
+    echo "startup-config DOES NOT HAVE tap agg mode commands"
+    echo "THIS DEVICE WILL NOW ENTER EXCEPTION BOOT MODE"
+    echo "CURRENT POSTURE: copy default config.. again"
+    echo "****************************************************************"
+    echo ""
+    # At this point we have verified that the startup-config exists
+    # At this point we are in EXCEPTION because even the hidden gold config appears to
+    # be missing the tap agg mode exclusive stanza. In this case we will copy the hidden config
+    # and reboot.
+    # Note: As written this could result in a reboot loop
+    # this can be changed but it is ultimately better than interfering and can be stopped
+    # with console access
+    # One possible alteration here is a cat << EOF approach that creates a default config
+    # that is even more stripped down than the so called hidden-gold-config
+    /usr/bin/logger -sf /var/log/messages -i -p 7 "The Configuration DOES NOT appear to be sane"
+    /usr/bin/logger -sf /var/log/messages -i -p 7 "Copying default config and rebooting"
+    cp /mnt/flash/.hidden-gold-config /mnt/flash/startup-config
+    /sbin/reboot
 fi
 
 exit
