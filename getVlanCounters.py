@@ -19,38 +19,53 @@ EXAMPLE OUTPUT:
 chines@mbp-arista-13122[~]$ ./getVlanCounters.py
 [{'command': 'show vlan counters',
   'encoding': 'json',
-  'result': {u'vlanCountersInfo': {u'1': {u'inBcastPkts': 0,
-                                          u'inMcastPkts': 0,
-                                          u'inOctets': 858146,
-                                          u'inUcastPkts': 5306,
-                                          u'outBcastPkts': 0,
-                                          u'outMcastPkts': 0,
-                                          u'outOctets': 232100,
-                                          u'outUcastPkts': 2398},
-                                   u'125': {u'inBcastPkts': 0,
-                                            u'inMcastPkts': 0,
-                                            u'inOctets': 0,
-                                            u'inUcastPkts': 0,
-                                            u'outBcastPkts': 0,
-                                            u'outMcastPkts': 0,
-                                            u'outOctets': 0,
-                                            u'outUcastPkts': 0},
-                                   u'25': {u'inBcastPkts': 0,
-                                           u'inMcastPkts': 0,
-                                           u'inOctets': 22374,
-                                           u'inUcastPkts': 198,
-                                           u'outBcastPkts': 0,
-                                           u'outMcastPkts': 0,
-                                           u'outOctets': 0,
-                                           u'outUcastPkts': 0},
-                                   u'89': {u'inBcastPkts': 0,
-                                           u'inMcastPkts': 0,
-                                           u'inOctets': 0,
-                                           u'inUcastPkts': 0,
-                                           u'outBcastPkts': 0,
-                                           u'outMcastPkts': 0,
-                                           u'outOctets': 0,
-                                           u'outUcastPkts': 0}}}}]
+  'result':
+  {  
+   u'vlanCountersInfo':{  
+      u'1':{  
+         u'inBcastPkts':0,
+         u'inMcastPkts':0,
+         u'inOctets':858146,
+         u'inUcastPkts':5306,
+         u'outBcastPkts':0,
+         u'outMcastPkts':0,
+         u'outOctets':232100,
+         u'outUcastPkts':2398
+      },
+      u'125':{  
+         u'inBcastPkts':0,
+         u'inMcastPkts':0,
+         u'inOctets':0,
+         u'inUcastPkts':0,
+         u'outBcastPkts':0,
+         u'outMcastPkts':0,
+         u'outOctets':0,
+         u'outUcastPkts':0
+      },
+      u'25':{  
+         u'inBcastPkts':0,
+         u'inMcastPkts':0,
+         u'inOctets':22374,
+         u'inUcastPkts':198,
+         u'outBcastPkts':0,
+         u'outMcastPkts':0,
+         u'outOctets':0,
+         u'outUcastPkts':0
+      },
+      u'89':{  
+         u'inBcastPkts':0,
+         u'inMcastPkts':0,
+         u'inOctets':0,
+         u'inUcastPkts':0,
+         u'outBcastPkts':0,
+         u'outMcastPkts':0,
+         u'outOctets':0,
+         u'outUcastPkts':0
+      }
+   }
+}
+}
+]
 '''
 
 
