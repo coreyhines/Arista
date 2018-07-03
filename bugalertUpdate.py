@@ -98,11 +98,6 @@ except:
 
 alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 sysdb_version = alertBaseImporter.alertBaseSysdb.genId
-print('SysDB version is: ', sysdb_version)
-
-
-#print('Local version is: ' + local_version)
-
 
 web_version = web_data['genId']
 
@@ -113,7 +108,7 @@ print('web version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expan
 
 if  sysdb_version != web_version:
     print "\nUpdating BugAlert database file!\n"
-    alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
+    alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     importdb = True
