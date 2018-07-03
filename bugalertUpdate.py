@@ -54,16 +54,9 @@ Add code with eAPI or python ssh library to copy AlertBase.json to all CVX clust
 __author__ = 'chines'
 
 import base64, json, warnings, requests
-# import subprocess
-# import os
+import os
 import sys
 import cStringIO
-# import shutil
-# import optparse
-# import QuickTrace
-# import Tac
-# import Tracing
-#import AlertBaseImporter
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
