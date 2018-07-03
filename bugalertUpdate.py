@@ -63,6 +63,7 @@ import cStringIO
 # import QuickTrace
 # import Tac
 # import Tracing
+#import AlertBaseImporter
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
@@ -85,16 +86,16 @@ result = requests.post(url, data=json.dumps(jsonpost))
 
 web_data = json.loads(result.text)
 web_data_final = result.text
-alertBaseFile = '/mnt/flash/AlertBase.json'
+alertBaseFile = '/persist/sys/AlertBase.json'
 sysname = 'ar'
 
 
 try:
-    current_json = open('/mnt/flash/AlertBase.json', 'r')
+    current_json = open(alertBaseFile, 'r')
     local_data = json.loads(current_json.read())
 except:
     print "Bug Alert Database does not exist. Downloading..."
-    alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
+    alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
@@ -102,26 +103,30 @@ except:
     print('\n\n Bug Alert Database successfully created and imported\n')
     exit(0)
 
-current_version = local_data['genId']
+alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+sysdb_version = alertBaseImporter.alertBaseSysdb.genId
+print('SysDB version is: ', sysdb_version)
+
+
+#print('Local version is: ' + local_version)
+
 
 web_version = web_data['genId']
 
 print('\n' + 'DB' + '\t'+ 'Release Date' + '\t' + 'Version').expandtabs(18)
 print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
-print('local version' + '\t' + local_data['releaseDate'] + '\t' + current_version).expandtabs(18)
+print('local version' + '\t' + local_data['releaseDate'] + '\t' + sysdb_version).expandtabs(18)
 print('web version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
-if current_version != web_version:
+if  sysdb_version != web_version:
     print "\nUpdating BugAlert database file!\n"
     alertdbfile = open('/mnt/flash/AlertBase.json', 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     importdb = True
 else:
-    # setting to True here regardless until bug is 
-    # resolved that results in entries not being imported
-    importdb = True
-    print('\n\n Bug Alert Database is up to date.\n')
+    importdb = False
+    print('\n\n Bug Alert Database is already up to date!\n')
 
 if importdb == True:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
