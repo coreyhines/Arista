@@ -27,7 +27,7 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# BugAlertUpdater
+# bugAlertUpdate.py
 #
 #    Written by:
 #       Corey Hines, Arista Networks
@@ -40,16 +40,10 @@ for database updates for the CVX Bugalerts feature.
 
 To learn more about BugAlerts see: https://eos.arista.com/eos-4-17-0f/bug-alerts/
 
-
 INSTALLATION
 1. Copy the script to /mnt/flash on CVX VM
 2. change values of username and password to a valid www.arista.com account
-
-RFEs
-Add error handling, any error handling at all ;-)
-Add ability to specify username and password as ARGV0/1 for running interactively and not storing password in script
-Add some kind of progress indicator and/or send some loggging output to STDOUT and/or system log
-Add code with eAPI or python ssh library to copy AlertBase.json to all CVX cluster members
+3. run the script with.. ./bugalertUpdate.py
 """
 __author__ = 'chines'
 
