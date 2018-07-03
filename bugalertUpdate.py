@@ -55,6 +55,7 @@ from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
 password = 'CHANGEME'
+
 importdb = False
 
 stdout_ = sys.stdout            ### Trying to use this later to redirect output of the database import to cut the noise. This isn't working yet.
