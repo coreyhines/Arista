@@ -98,20 +98,16 @@ sysdb_releaseDate = alertBaseImporter.alertBaseSysdb.releaseDate
 
 web_version = web_data['genId']
 
-print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
-print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
-print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
-print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
-
 if  sysdb_version != web_version:
     print "\nUpdating BugAlert database file!\n"
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     importdb = True
+    updatedDB = "YES"
 else:
     importdb = False
-    print('\n\n Bug Alert Database is already up to date!\n')
+    #print('\n\n Bug Alert Database is already up to date!\n')
 
 if importdb == True:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
@@ -120,21 +116,26 @@ if importdb == True:
         alertBaseImporter.loadAlertBase()
         sys.stdout = stdout_
         result = stream.getvalue()
-        print('\n\n Bug Alert Database successfully imported\n')
+        dbImported = "YES"
+        #print('\n\n Bug Alert Database successfully imported\n')
     except:
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
+        dbImported = "NO"
         exit (1)
 else:
-    print('\n\n Bug Alert Database import is not required\n')
+    updatedDB = "NO"
+    dbImported = "NO"
+    #print('\n\n Bug Alert Database import is not required\n')
 
 print('SUMMARY').expandtabs(18)
 print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
 print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
 print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
 print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
-
+print('Database updated:' + '\t' updatedDB + '\n')
+print('Database imported:' + '\t' dbImported + '\n')
 try:
     with open(alertBaseFileFlash) as file:
         pass
