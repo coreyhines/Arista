@@ -117,7 +117,6 @@ if importdb == True:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
     sys.stdout = stream
     try:
-        #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
         alertBaseImporter.loadAlertBase()
         sys.stdout = stdout_
         result = stream.getvalue()
@@ -129,6 +128,12 @@ if importdb == True:
         exit (1)
 else:
     print('\n\n Bug Alert Database import is not required\n')
+
+print('SUMMARY').expandtabs(18)
+print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
+print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
+print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
+print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
 try:
     with open(alertBaseFileFlash) as file:
