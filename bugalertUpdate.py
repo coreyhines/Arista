@@ -84,6 +84,7 @@ alertBaseFile = '/persist/sys/AlertBase.json'
 alertBaseFileFlash = '/mnt/flash/AlertBase.json'
 sysname = 'ar'
 
+alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 
 try:
     current_json = open(alertBaseFile, 'r')
@@ -94,19 +95,19 @@ except:
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     copyfile(alertBaseFile, alertBaseFileFlash)
-    alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
     alertBaseImporter.loadAlertBase()
     print('\n\n Bug Alert Database successfully created and imported\n')
     exit(0)
 
-alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 sysdb_version = alertBaseImporter.alertBaseSysdb.genId
+sysdb_releaseDate = alertBaseImporter.alertBaseSysdb.releaseDate
 
 web_version = web_data['genId']
 
 print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
 print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
-print('Installed version' + '\t' + local_data['releaseDate'] + '\t' + sysdb_version).expandtabs(18)
+print('Installed version' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
 print('Available version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
 if  sysdb_version != web_version:
