@@ -98,7 +98,7 @@ sysdb_releaseDate = alertBaseImporter.alertBaseSysdb.releaseDate
 web_version = web_data['genId']
 
 if  sysdb_version != web_version:
-    print "\nUpdating BugAlert database file!\n"
+    print "\n Updating BugAlert database file!\n"
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
@@ -134,6 +134,7 @@ print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expan
 print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 print('Database updated:' + '\t' +'\t' + updatedDB).expandtabs(18)
 print('Database imported:' + '\t' + dbImported).expandtabs(18)
+print('\n')
 
 try:
     with open(alertBaseFileFlash) as file:
