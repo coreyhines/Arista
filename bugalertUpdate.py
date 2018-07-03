@@ -132,7 +132,7 @@ print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(
 print('----------' + '\t' + '------------' + '\t' + '------------------------------------').expandtabs(18)
 print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
 print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
-print('Database updated:' + '\t' + updatedDB).expandtabs(18)
+print('Database updated:' + '\t' +'\t' + updatedDB).expandtabs(18)
 print('Database imported:' + '\t' + dbImported).expandtabs(18)
 
 try:
