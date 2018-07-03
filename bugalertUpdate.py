@@ -136,4 +136,7 @@ if importdb == True:
 else:
     print('\n\n Bug Alert Database import is not required\n')
 
+if ! alertBaseFileFlash:
+    copyfile(alertBaseFile, alertBaseFileFlash)
+
 exit(0)
