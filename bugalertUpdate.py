@@ -81,15 +81,14 @@ sysname = 'ar'
 alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 
 try:
-    current_json = open(alertBaseFile, 'r')
-    local_data = json.loads(current_json.read())
-except:
+    with open(alertBaseFile) as file:
+        pass
+except IOError as e:
     print "Bug Alert Database does not exist. Downloading..."
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     copyfile(alertBaseFile, alertBaseFileFlash)
-    #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
     alertBaseImporter.loadAlertBase()
     print('\n\n Bug Alert Database successfully created and imported\n')
     exit(0)
