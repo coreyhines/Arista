@@ -48,7 +48,6 @@ INSTALLATION
 __author__ = 'chines'
 
 import base64, json, warnings, requests
-import os
 import sys
 import cStringIO
 from shutil import copyfile
@@ -122,12 +121,11 @@ if importdb == True:
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
-        dbImported = "NO"
+        dbImported = "FAILED"
         exit (1)
 else:
     updatedDB = "NO"
     dbImported = "NO"
-    #print('\n\n Bug Alert Database import is not required\n')
 
 print('SUMMARY').expandtabs(18)
 print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
