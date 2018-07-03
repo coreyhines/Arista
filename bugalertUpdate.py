@@ -136,7 +136,10 @@ if importdb == True:
 else:
     print('\n\n Bug Alert Database import is not required\n')
 
-if ! alertBaseFileFlash:
+try:
+    with open(alertBaseFileFlash) as file:
+        pass
+except IOError as e:
     copyfile(alertBaseFile, alertBaseFileFlash)
 
 exit(0)
