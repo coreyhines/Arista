@@ -27,7 +27,7 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# bugAlertUpdate.py
+# bugalertUpdate.py
 #
 #    Written by:
 #       Corey Hines, Arista Networks
@@ -101,8 +101,8 @@ web_version = web_data['genId']
 
 print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
 print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
-print('Installed -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
-print('Available -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
+print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
+print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
 if  sysdb_version != web_version:
     print "\nUpdating BugAlert database file!\n"
