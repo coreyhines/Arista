@@ -57,6 +57,7 @@ import base64, json, warnings, requests
 import os
 import sys
 import cStringIO
+from shutil import copyfile
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
@@ -80,6 +81,7 @@ result = requests.post(url, data=json.dumps(jsonpost))
 web_data = json.loads(result.text)
 web_data_final = result.text
 alertBaseFile = '/persist/sys/AlertBase.json'
+alertBaseFileFlash = '/mnt/flash/AlertBase.json'
 sysname = 'ar'
 
 
@@ -91,6 +93,7 @@ except:
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
+    copyfile(alertBaseFile, alertBaseFileFlash)
     alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
     alertBaseImporter.loadAlertBase()
     print('\n\n Bug Alert Database successfully created and imported\n')
@@ -101,10 +104,10 @@ sysdb_version = alertBaseImporter.alertBaseSysdb.genId
 
 web_version = web_data['genId']
 
-print('\n' + 'DB' + '\t'+ 'Release Date' + '\t' + 'Version').expandtabs(18)
+print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
 print('----------' + '\t' + '------------' + '\t' + '-----------------------------').expandtabs(18)
-print('local version' + '\t' + local_data['releaseDate'] + '\t' + sysdb_version).expandtabs(18)
-print('web version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
+print('Installed version' + '\t' + local_data['releaseDate'] + '\t' + sysdb_version).expandtabs(18)
+print('Available version' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 
 if  sysdb_version != web_version:
     print "\nUpdating BugAlert database file!\n"
@@ -120,7 +123,7 @@ if importdb == True:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
     sys.stdout = stream
     try:
-        alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+        #alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
         alertBaseImporter.loadAlertBase()
         sys.stdout = stdout_
         result = stream.getvalue()
