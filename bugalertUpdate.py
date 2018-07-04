@@ -85,8 +85,10 @@ alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 
 try:
     with open(alertBaseFile) as file:
-        pass # Check if the AlertBase JSON file exists
-except IOError as e: # handle the exception by downloading the AlertBase JSON
+        # Check if the AlertBase JSON file exists
+        pass
+except IOError as e:
+    # handle the exception (file doesn't exist) by downloading the AlertBase JSON
     print "Bug Alert Database does not exist. Downloading..."
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
