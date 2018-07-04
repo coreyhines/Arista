@@ -44,7 +44,7 @@ INSTALLATION
 1. ssh to the primary CVX node in the CVX cluster
 2. wget https://github.com/coreyhines/Arista/raw/master/bugalertUpdate.py 
 3. change values of username and password to a valid www.arista.com account
-3. run the script with.. ./bugalertUpdate.py
+4. run the script with.. ./bugalertUpdate.py
 """
 __author__ = 'chines'
 
