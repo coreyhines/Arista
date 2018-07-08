@@ -124,7 +124,7 @@ if importdb:
         sys.stdout = stdout_
         result = stream.getvalue()
         dbImported = "YES"
-    except:
+    except: 
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
