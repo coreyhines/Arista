@@ -42,15 +42,16 @@ To learn more about BugAlerts see: https://eos.arista.com/eos-4-17-0f/bug-alerts
 
 INSTALLATION
 1. ssh to the primary CVX node in the CVX cluster
-2. wget https://github.com/coreyhines/Arista/raw/master/bugalertUpdate.py 
+2. wget https://github.com/coreyhines/Arista/raw/master/bugalertUpdate.py
 3. change values of username and password to a valid www.arista.com account
 4. run the script with.. ./bugalertUpdate.py
 """
 __author__ = 'chines'
 
-import base64, json, warnings, requests
 import sys
 import cStringIO
+from shutil import copyfile
+import base64, json, warnings, requests
 from shutil import copyfile
 from AlertBaseImporter import AlertBaseImporter
 
@@ -59,7 +60,7 @@ password = 'CHANGEME'
 
 importdb = False
 
-stdout_ = sys.stdout            ### Trying to use this later to redirect output of the database import to cut the noise 
+stdout_ = sys.stdout          ### Trying to use this later to redirect output of the database import to cut the noise 
 stream = cStringIO.StringIO()
 
 string = username + ':' + password
@@ -84,19 +85,19 @@ sysname = 'ar'
 alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
 
 try:
-    with open(alertBaseFile) as file:
+    with open(alertBaseFile) as filetest:
         # Check if the AlertBase JSON file exists
         pass
 except IOError as e:
     # handle the exception (file doesn't exist) by downloading the AlertBase JSON
-    print "Bug Alert Database does not exist. Downloading..."
+    print ('\n Bug Alert Database does not exist. Downloading...\n')
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
     alertdbfile.close()
     copyfile(alertBaseFile, alertBaseFileFlash)
     # Import the AlertBase JSON
     alertBaseImporter.loadAlertBase()
-    print('\n\n Bug Alert Database successfully created and imported\n')
+    print('\n Bug Alert Database successfully created and imported\n')
     exit(0)
 
 # Extract the BugAlert genId and the releaseDate from local CVX SysDB
@@ -116,7 +117,7 @@ if  sysdb_version != web_version: # If the version on arista.com is newer, downl
 else:
     importdb = False
 
-if importdb == True:
+if importdb:
     print('\n\n Bug Alert Database was updated, importing new entries...\n\n')
     sys.stdout = stream
     try:
@@ -124,7 +125,7 @@ if importdb == True:
         sys.stdout = stdout_
         result = stream.getvalue()
         dbImported = "YES"
-    except:
+    except: 
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
@@ -152,5 +153,4 @@ try:
         pass
 except IOError as e:
     copyfile(alertBaseFile, alertBaseFileFlash)
-
 exit(0)
