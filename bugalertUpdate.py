@@ -52,7 +52,6 @@ import sys
 import cStringIO
 from shutil import copyfile
 import base64, json, warnings, requests
-from shutil import copyfile
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
@@ -60,7 +59,7 @@ password = 'CHANGEME'
 
 importdb = False
 
-stdout_ = sys.stdout          ### Trying to use this later to redirect output of the database import to cut the noise 
+stdout_ = sys.stdout          ### Trying to use this later to redirect output of the database import to cut the noise
 stream = cStringIO.StringIO()
 
 string = username + ':' + password
@@ -125,7 +124,7 @@ if importdb:
         sys.stdout = stdout_
         result = stream.getvalue()
         dbImported = "YES"
-    except: 
+    except:
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
