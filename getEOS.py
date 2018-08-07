@@ -15,7 +15,7 @@ parser.add_argument(
   "version", type=str, help="EOS image version", default=None)
 
 parser.add_argument(
-  "-p", "--package", type=str, default="EOS", choices=["EOS", "vEOS", "cEOS", "all"],
+  "-p", "--package", type=str, default="eos", choices=["eos", "vmdk", "veos", "ceos", "all"],
   help="specify which EOS packaging", required=False)
 
 args = parser.parse_args()
@@ -25,12 +25,14 @@ images = []
 urls = []
 outputFilename = []
 
-if args.package == "vEOS":
+if args.package == "veos":
   images = ['vEOS-lab']
-elif args.package == "cEOS":
+elif args.package == "ceos":
   images = ['cEOS']
+elif args.package == "vmdk":
+  images = ['EOS.']
 elif args.package == "all":
-  images = ['EOS', 'cEOS', 'vEOS-lab']
+  images = ['EOS', 'cEOS', 'vEOS-lab', 'EOS.']
 else:
   images = ['EOS']
 
@@ -41,8 +43,10 @@ home = expanduser("~")
 outputDir = home + "/Downloads/"
 
 for image in images:
-  if image == "cEOS":
+  if image == "ceos":
     ext = ".tar.xz"
+  elif image == "EOS.":
+    ext = "vmdk"
   else:
     ext = ".swi"
   urls.append("http://dist/release/EOS-" + version + "/final/images/" + image + ext)  
