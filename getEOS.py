@@ -15,7 +15,7 @@ images = {'veos':['vEOS-lab'],
           'all':['EOS','cEOS','vEOS-lab','EOS.vmdk'],
           'eos':['EOS']}
 outputFilename = []
-vpn_name = 'Arista VPN HQ'
+vpn_name = 'Arista VPN'
 
 def main(args,version):
   urls = []
