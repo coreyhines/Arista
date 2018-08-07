@@ -15,7 +15,7 @@ images = {'veos':['vEOS-lab'],
           'all':['EOS','cEOS','vEOS-lab','EOS.vmdk'],
           'eos':['EOS']}
 outputFilename = []
-vpn_name = 'Arista VPN'
+vpn_name = 'Arista VPN HQ'
 
 def main(args,version):
   urls = []
@@ -23,7 +23,7 @@ def main(args,version):
   outputDir = home + "/Downloads/"
   failed = False #Default value to False
   vpn_reconnect_counter = 0 #Counter to prevent a forever loop
-  vpn_max_reconnect = 20 #Max VPN reconnect tries to prevent forever loop
+  vpn_max_reconnect = 2000 #Max VPN reconnect tries to prevent forever loop
 
   for image in images[args.package]:
     if image == "cEOS":
