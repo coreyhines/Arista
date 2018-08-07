@@ -52,7 +52,7 @@ def main(args,version):
       failed = True
   else:
     print("VPN Connection is down...\n")
-    print("Attempting to connect to {0}}".format(vpn_name))
+    print("Attempting to connect to {0}".format(vpn_name))
     check_output(["scutil", "--nc", "start", vpn_name])
     while True:
       vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
