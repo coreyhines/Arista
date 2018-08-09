@@ -5,7 +5,7 @@ import wget
 import sys
 import re
 import time
-from subprocess import Popen, call, check_output, PIPE
+from subprocess import Popen, call, check_output
 import os
 from os.path import expanduser
 
