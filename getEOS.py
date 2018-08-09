@@ -17,6 +17,7 @@ images = {'veos':['vEOS-lab'],
 outputFilename = []
 vpn_name = 'Arista VPN'
 
+
 def main(args,version):
   urls = []
   home = expanduser("~")
@@ -103,6 +104,9 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
   version = args.version
+  if not re.match(r"\d\.\d{1,2}\.\d{1,2}[FM]?$", version):
+    parser.print_usage()
+    parser.exit()
   #Adding in redundancy check in case no version supplied.
   while not version:
     version = raw_input("Enter EOS Version: ").strip()
