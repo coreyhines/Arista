@@ -5,7 +5,7 @@ import wget
 import sys
 import re
 import time
-from subprocess import Popen, call, check_output
+from subprocess import Popen, call, check_output, PIPE
 import os
 from os.path import expanduser
 
@@ -15,14 +15,22 @@ images = {'veos':['vEOS-lab'],
           'all':['EOS','cEOS','vEOS-lab','EOS.vmdk'],
           'eos':['EOS']}
 outputFilename = []
-vpn_name = 'Arista VPN'
 
+def check_native_vpn():
+  "Function to check if there is a native Arista VPN client"
+  native_check = check_output(["scutil","--nc","list"]).split('\n')
+  for r1 in native_check:
+    if 'arista' in r1.lower():
+      return(r1[r1.find('"')+1:r1.rfind('"')])
+  else:
+    return(False)
 
 def main(args,version):
   urls = []
   home = expanduser("~")
   outputDir = home + "/Downloads/"
   failed = False #Default value to False
+  native_vpn_disconnect = False #Variable to determine if vpn should be disconnected
   vpn_reconnect_counter = 0 #Counter to prevent a forever loop
   vpn_max_reconnect = 2000 #Max VPN reconnect tries to prevent forever loop
 
@@ -39,49 +47,55 @@ def main(args,version):
       ext = ".vmdk"
     outputFilename.append(outputDir + image + "-" + version + ext)
 
-  vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
-  vpncheckStr = vpncheck.split("\n")
-
-  if vpncheckStr[0] == "Connected":
-    print("VPN Connection is up...\n")
-    print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
-    try:
-      for url, filename in map(None, urls, outputFilename):
-        file = wget.download(url, filename)
-        print("\nFile downloaded to " + filename)
-    except:
-      failed = True
-  else:
-    print("VPN Connection is down...\n")
-    print("Attempting to connect to {0}".format(vpn_name))
-    check_output(["scutil", "--nc", "start", vpn_name])
-    while True:
-      vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
-      vpncheckStr = vpncheck.split("\n")
-      vpncheckResult = vpncheckStr[0].strip()
-      if vpncheckResult == "Connected":
-        break
-      elif vpn_reconnect_counter >= vpn_max_reconnect:
-        failed = True
-        break
-      else:
-        vpn_reconnect_counter += 1
-    
-    #Check to make sure that the VPN tunnel didn't hit reconnect max tries
-    if not failed:
+  #Check to see if native OSX vpn is configured
+  vpn_name = check_native_vpn()
+  if vpn_name:
+    vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
+    vpncheckStr = vpncheck.split("\n")
+    #Check to see if native vpn is connected
+    if vpncheckStr[0] == "Connected":
+      print("VPN Connection is up...\n")
       print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
       try:
         for url, filename in map(None, urls, outputFilename):
-          # print ("URL is " + url)
-          # print ("Filename is " + filename)
           file = wget.download(url, filename)
           print("\nFile downloaded to " + filename)
       except:
         failed = True
+        file = None #Added in so it can be used to evaluate later on
     else:
-      print("Unable to start VPN connection:\nEither you are not connected to the internet or you don't have the right VPN name")
+      print("VPN Connection is down...\n")
+      print("Attempting to connect to {0}".format(vpn_name))
+      check_output(["scutil", "--nc", "start", vpn_name])
+      while True:
+        vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
+        vpncheckStr = vpncheck.split("\n")
+        vpncheckResult = vpncheckStr[0].strip()
+        if vpncheckResult == "Connected":
+          native_vpn_disconnect = True
+          break
+        elif vpn_reconnect_counter >= vpn_max_reconnect:
+          failed = True
+          break
+        else:
+          vpn_reconnect_counter += 1
+    
+      #Check to make sure that the VPN tunnel didn't hit reconnect max tries
+      if not failed:
+        print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
+        try:
+          for url, filename in map(None, urls, outputFilename):
+            # print ("URL is " + url)
+            # print ("Filename is " + filename)
+            file = wget.download(url, filename)
+            print("\nFile downloaded to " + filename)
+        except:
+          failed = True
+          file = None #Added in so it can be used to evaluate later on
+      else:
+        print("Unable to start VPN connection:\nEither you are not connected to the internet or you don't have the right VPN name")
 
-  if not failed:
+  if file:
     for filename, urls in map(None, outputFilename, urls):
       filesize = os.stat(filename)[6]
       if filesize < 1024:
@@ -92,6 +106,13 @@ def main(args,version):
         os.remove(filename)
         print ("\n\nThere was an error downloading: " + url + "\n")
         print ("\t" + reason + "\n")
+  #Check to see if script opened VPN tunnel, if so disconnect from VPN
+  if native_vpn_disconnect:
+    print('\nDisconnecting VPN connection')
+    check_output(["scutil","--nc","stop",vpn_name])
+    print('You have been disconnected from {0}\n'.format(vpn_name))
+  else:
+    print('\nHave a great day!\n')
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -103,11 +124,11 @@ if __name__ == '__main__':
     help="specify which EOS packaging", required=False)
 
   args = parser.parse_args()
-  version = args.version
+  version = args.version.upper()
   if not re.match(r"\d\.\d{1,2}\.\d{1,2}[FM]?$", version):
     parser.print_usage()
     parser.exit()
   #Adding in redundancy check in case no version supplied.
   while not version:
     version = raw_input("Enter EOS Version: ").strip()
-  main(args,version.upper())
+  main(args,version)
