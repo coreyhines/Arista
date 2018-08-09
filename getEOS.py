@@ -62,7 +62,6 @@ def main(args,version):
       print ("Downloading EOS:" + version + " To: " + outputDir + "\n")
       try:
         for url, filename in map(None, urls, outputFilename):
-          print("FILENAME IS: " + filename)
           file = wget.download(url, filename)
           print("\nFile downloaded to " + filename)
       except:
