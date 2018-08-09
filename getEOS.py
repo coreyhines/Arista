@@ -11,9 +11,11 @@ from os.path import expanduser
 
 images = {'veos':['vEOS-lab'],
           'ceos':['cEOS'],
-          'vmdk':['EOS.vmd'],
-          'all':['EOS','cEOS','vEOS-lab','EOS.vmdk'],
-          'eos':['EOS']}
+          'vmdk':['EOS.vmdk'],
+          'all':['EOS','EOS-2GB', 'EOS-PDP', 'cEOS','vEOS-lab','EOS.vmdk'],
+          'eos':['EOS'],
+          'eos-2gb':['EOS-2GB'],
+          'eos-pdp':['EOS-PDP']}
 outputFilename = []
 
 def check_native_vpn():
@@ -45,6 +47,8 @@ def main(args,version):
     if image == "EOS.vmdk":
       image = "EOS" 
       ext = ".vmdk"
+
+
     outputFilename.append(outputDir + image + "-" + version + ext)
 
   #Check to see if native OSX vpn is configured
@@ -55,9 +59,10 @@ def main(args,version):
     #Check to see if native vpn is connected
     if vpncheckStr[0] == "Connected":
       print("VPN Connection is up...\n")
-      print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
+      print ("Downloading EOS:" + version + " To: " + outputDir + "\n")
       try:
         for url, filename in map(None, urls, outputFilename):
+          print("FILENAME IS: " + filename)
           file = wget.download(url, filename)
           print("\nFile downloaded to " + filename)
       except:
@@ -85,8 +90,6 @@ def main(args,version):
         print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
         try:
           for url, filename in map(None, urls, outputFilename):
-            # print ("URL is " + url)
-            # print ("Filename is " + filename)
             file = wget.download(url, filename)
             print("\nFile downloaded to " + filename)
         except:
@@ -120,7 +123,7 @@ if __name__ == '__main__':
     "version", type=str, help="EOS image version", default=None)
 
   parser.add_argument(
-    "-p", "--package", type=str, default="eos", choices=["eos", "vmdk", "veos", "ceos", "all"],
+    "-p", "--package", type=str, default="eos", choices=["eos", "eos-2gb", "vmdk", "veos", "ceos", "pdp", "all"],
     help="specify which EOS packaging", required=False)
 
   args = parser.parse_args()
