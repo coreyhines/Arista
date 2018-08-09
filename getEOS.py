@@ -76,7 +76,8 @@ def main(args,version):
         vpncheckStr = vpncheck.split("\n")
         vpncheckResult = vpncheckStr[0].strip()
         if vpncheckResult == "Connected":
-          native_vpn_disconnect = True
+          if not args.stayConnected:
+            native_vpn_disconnect = True
           break
         elif vpn_reconnect_counter >= vpn_max_reconnect:
           failed = True
@@ -124,6 +125,10 @@ if __name__ == '__main__':
   parser.add_argument(
     "-p", "--package", type=str, default="eos", choices=["eos", "eos-2gb", "vmdk", "veos", "ceos", "pdp", "all"],
     help="specify which EOS packaging", required=False)
+
+  parser.add_argument(
+    "-s", "--stayConnected", type=bool, default=False,
+    help="Overrides the default behavior of disconnecting the VPN if getEOS.py made the VPN connection.", required=False)
 
   args = parser.parse_args()
   version = args.version.upper()
