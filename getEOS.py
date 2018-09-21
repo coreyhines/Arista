@@ -5,6 +5,7 @@ import wget
 import sys
 import re
 import time
+from urllib2 import urlopen
 from subprocess import Popen, call, check_output
 import os
 from os.path import expanduser
@@ -26,9 +27,25 @@ def check_native_vpn():
       return(r1[r1.find('"')+1:r1.rfind('"')])
   else:
     return(False)
-
+  
+def get_latest_rn(r_url):
+  #Function to grab the most current posted release notes
+  all_release_notes = {}
+  content = urlopen(r_url).read().split('\n')
+  for r1 in content:
+    if '-RN-v' in r1:
+      release_file = r1[r1.find('">E')+2:r1.find('</a>')]
+      ver = release_file[release_file.find('-v')+2:release_file.find('.pdf')]
+      all_release_notes[ver] = release_file
+  latest_ver = 0.0
+  for r1 in all_release_notes:
+    if float(r1) > latest_ver:
+      latest_ver = float(r1)
+  return(all_release_notes[str(latest_ver)])
+                  
 def main(args,version):
   urls = []
+  rn_url = "http://dist/release/EOS-" + version + "/final/doc/"
   home = expanduser("~")
   outputDir = home + "/Downloads/"
   failed = False #Default value to False
@@ -64,6 +81,11 @@ def main(args,version):
         for url, filename in map(None, urls, outputFilename):
           file = wget.download(url, filename)
           print("\nFile downloaded to " + filename)
+        if args.releaseNotes:
+          release_note = get_latest_rn(rn_url)
+          if release_note:
+            file = wget.download(rn_url + release_note, outputDir+release_note)
+            print("\nFile downloaded to " + outputDir+release_note)
       except:
         failed = True
         file = None #Added in so it can be used to evaluate later on
@@ -92,6 +114,11 @@ def main(args,version):
           for url, filename in map(None, urls, outputFilename):
             file = wget.download(url, filename)
             print("\nFile downloaded to " + filename)
+          if args.releaseNotes:
+            release_note = get_latest_rn(rn_url)
+            if release_note:
+              file = wget.download(rn_url + release_note, outputDir+release_note)
+              print("\nFile downloaded to " + outputDir+release_note)
         except:
           failed = True
           file = None #Added in so it can be used to evaluate later on
@@ -129,6 +156,11 @@ if __name__ == '__main__':
   parser.add_argument(
     "-s", "--stayConnected", type=bool, default=False,
     help="Overrides the default behavior of disconnecting the VPN if getEOS.py made the VPN connection.", required=False)
+
+  parser.add_argument(
+    "-r","--releaseNotes", type=bool, default=False,
+    help="Downloads the Current release notes for this version release.", required=False
+  )
 
   args = parser.parse_args()
   version = args.version.upper()
