@@ -51,18 +51,13 @@ __author__ = 'chines'
 import sys
 import cStringIO
 from shutil import copyfile
-import base64, json, warnings, requests, syslog
+import base64, json, warnings, requests
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
 password = 'CHANGEME'
 
 importdb = False
-
-syslog.openlog("BugAlertUpdater",0,syslog.LOG_LOCAL4)
-
-def to_syslog(sys_title,sys_msg):
-    syslog.syslog("%%BugAlert-6-LOG: %s: %s"%(sys_title,sys_msg))
 
 stdout_ = sys.stdout          ### Trying to use this later to redirect output of the database import to cut the noise
 stream = cStringIO.StringIO()
@@ -133,17 +128,11 @@ if importdb:
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
-        to_syslog("BugAlert Import","Failed")
         dbImported = "FAILED"
         exit (1)
 else:
     updatedDB = "NO"
     dbImported = "NO"
-
-#Send summary to Syslog
-to_syslog("Installed Version",sysdb_version)
-to_syslog("Available Version",web_version)
-to_syslog("Database Updated/Imported","%s/%s"%(updatedDB,dbImported))
 
 # Print a summary of what occurred in a table output
 print('\nSUMMARY').expandtabs(18)
