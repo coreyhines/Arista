@@ -29,7 +29,7 @@ def check_native_vpn():
     return(False)
   
 def get_latest_rn(r_url):
-  #Function to grab the most current posted release notes
+  #Function to grab the most current posted release notes and return filename
   all_release_notes = {}
   content = urlopen(r_url).read().split('\n')
   for r1 in content:
