@@ -43,19 +43,35 @@ To learn more about BugAlerts see: https://eos.arista.com/eos-4-17-0f/bug-alerts
 INSTALLATION
 1. ssh to the primary CVX node in the CVX cluster
 2. wget https://github.com/coreyhines/Arista/raw/master/bugalertUpdate.py
-3. change values of username and password to a valid www.arista.com account
-4. run the script with.. ./bugalertUpdate.py
+3. run the script with.. ./bugalertUpdate.py --user USERNAME --password PASSWORD
+4. add --proxy and --protocol arguments if a proxy is used
 """
 __author__ = 'chines'
 
 import sys
+import argparse
 import cStringIO
 from shutil import copyfile
 import base64, json, warnings, requests
 from AlertBaseImporter import AlertBaseImporter
 
-username = 'CHANGEME'
-password = 'CHANGEME'
+warnings.filterwarnings("ignore")
+parser = argparse.ArgumentParser()
+parser.add_argument('--user', required=True, help='arista.com user')
+parser.add_argument('--password',required=True, help='password corresponding to the username')
+parser.add_argument('--proxy', default=None, help='IP and port of the proxy server, e.g. 10.10.10.10:4444')
+parser.add_argument('--protocol', default='https', help='http or https, if not specified https is used')
+
+args = parser.parse_args()
+
+#Initialize the dictionary for the Proxy server and populate it with the given arguments
+proxies = {}
+if args.proxy:
+    proxies[args.protocol] = args.proxy
+print "Proxies dictionary is: ",
+
+username = args.user
+password = args.password
 
 importdb = False
 
@@ -71,8 +87,7 @@ warnings.filterwarnings("ignore")
 
 jsonpost = {'user_auth': creds}
 
-result = requests.post(url, data=json.dumps(jsonpost))
-
+result = requests.post(url, data=json.dumps(jsonpost),proxies=proxies)
 web_data = json.loads(result.text)
 web_data_final = result.text
 
