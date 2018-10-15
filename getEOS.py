@@ -164,7 +164,7 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
   version = args.version.upper()
-  if not re.match(r"\d\.\d{1,2}\.\d{1,2}[FM]?$", version):
+  if not re.match(r"\d\.\d{1,2}\.\d{1,2}.\d{0,2}[FM]?$", version):
     parser.print_usage()
     parser.exit()
   #Adding in redundancy check in case no version supplied.
