@@ -13,6 +13,7 @@ portNum = 2024
 while count <= aclTotal:
     print "ip access-list %d" % (aclNum + count)
     for ace in range(aceCount):
-        print "  %s %s %s host %s eq %d" % (action, prot, src, dstHost, portNum)
+        print "  %s %s %s host %s eq %d" % (
+            action, prot, src, dstHost, portNum)
         portNum = portNum + 1
     count = count + 1
