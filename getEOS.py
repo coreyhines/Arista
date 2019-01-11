@@ -112,8 +112,9 @@ def main(args,version):
         print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
         try:
           for url, filename in map(None, urls, outputFilename):
+            print("\n[Starting] Download {}".format(filename.split('/')[::-1][0]))
             file = wget.download(url, filename)
-            print("\nFile downloaded to " + filename)
+            print("\n[Completed] File downloaded to " + filename)
           if args.releaseNotes:
             release_note = get_latest_rn(rn_url)
             if release_note:
