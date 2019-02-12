@@ -157,12 +157,14 @@ if __name__ == '__main__':
     "-p", "--package", type=str, default="eos", choices=["eos", "eos-2gb", "vmdk", "veos", "ceos", "pdp", "all"],
     help="specify which EOS packaging", required=False)
 
+  # Modified to accept only the parameter
   parser.add_argument(
-    "-s", "--stayConnected", type=bool, default=False,
+    "-s", "--stayConnected", action="store_true",
     help="Overrides the default behavior of disconnecting the VPN if getEOS.py made the VPN connection.", required=False)
 
+  # Modified to accept only the parameter
   parser.add_argument(
-    "-r","--releaseNotes", type=bool, default=False,
+    "-r","--releaseNotes", action="store_true",
     help="Downloads the Current release notes for this version release.", required=False
   )
 
