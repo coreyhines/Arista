@@ -55,10 +55,13 @@ from shutil import copyfile
 import base64, json, warnings, requests
 from AlertBaseImporter import AlertBaseImporter
 
+username = 'CHANGEME'
+password = 'CHANGEME'
+
 warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
-parser.add_argument('--user', required=True, help='arista.com user')
-parser.add_argument('--password',required=True, help='password corresponding to the username')
+parser.add_argument('--user', required=False, default=username, help='arista.com user')
+parser.add_argument('--password',required=False, default=password, help='password corresponding to the username')
 parser.add_argument('--proxy', default=None, help='IP and port of the proxy server, e.g. 10.10.10.10:4444')
 parser.add_argument('--protocol', default='https', help='http or https, if not specified https is used')
 
