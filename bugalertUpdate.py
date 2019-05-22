@@ -51,7 +51,11 @@ __author__ = 'chines'
 import sys
 import cStringIO
 from shutil import copyfile
-import base64, json, warnings, requests, syslog
+import base64
+import json
+import warnings
+import requests
+import syslog
 from AlertBaseImporter import AlertBaseImporter
 
 username = 'CHANGEME'
@@ -59,12 +63,15 @@ password = 'CHANGEME'
 
 importdb = False
 
-syslog.openlog("BugAlertUpdater",0,syslog.LOG_LOCAL4)
+syslog.openlog("BugAlertUpdater", 0, syslog.LOG_LOCAL4)
 
-def to_syslog(sys_title,sys_msg):
-    syslog.syslog("%%BugAlert-6-LOG: %s: %s"%(sys_title,sys_msg))
 
-stdout_ = sys.stdout          ### Trying to use this later to redirect output of the database import to cut the noise
+def to_syslog(sys_title, sys_msg):
+    syslog.syslog("%%BugAlert-6-LOG: %s: %s" % (sys_title, sys_msg))
+
+
+# Trying to use this later to redirect output of the database import to cut the noise
+stdout_ = sys.stdout
 stream = cStringIO.StringIO()
 
 string = username + ':' + password
@@ -86,7 +93,7 @@ alertBaseFileFlash = '/mnt/flash/AlertBase.json'
 sysname = 'ar'
 
 # Instantiate an object form the class AlertBaseImporter
-alertBaseImporter = AlertBaseImporter( alertBaseFile, sysname )
+alertBaseImporter = AlertBaseImporter(alertBaseFile, sysname)
 
 try:
     with open(alertBaseFile) as filetest:
@@ -111,7 +118,7 @@ sysdb_releaseDate = alertBaseImporter.alertBaseSysdb.releaseDate
 # Extract the genId from the latest AlertBase available at arista.com
 web_version = web_data['genId']
 
-if  sysdb_version != web_version: # If the version on arista.com is newer, download and install it
+if sysdb_version != web_version:  # If the version on arista.com is newer, download and install it
     print "\n Updating BugAlert database file!\n"
     alertdbfile = open(alertBaseFile, 'w')
     alertdbfile.write(web_data_final)
@@ -129,30 +136,34 @@ if importdb:
         sys.stdout = stdout_
         result = stream.getvalue()
         dbImported = "YES"
-    except: 
+    except:
         sys.stdout = stdout_
         result = stream.getvalue()
         print('Bug Alert Database import failed!')
-        to_syslog("BugAlert Import","Failed")
+        to_syslog("BugAlert Import", "Failed")
         dbImported = "FAILED"
-        exit (1)
+        exit(1)
 else:
     updatedDB = "NO"
     dbImported = "NO"
 
-#Send summary to Syslog
-to_syslog("Installed Version",sysdb_version)
-to_syslog("Available Version",web_version)
-to_syslog("Database Updated/Imported","%s/%s"%(updatedDB,dbImported))
+# Send summary to Syslog
+to_syslog("Installed Version", sysdb_version)
+to_syslog("Available Version", web_version)
+to_syslog("Database Updated/Imported", "%s/%s" % (updatedDB, dbImported))
 
 # Print a summary of what occurred in a table output
 print('\nSUMMARY').expandtabs(18)
-print('\n' + 'alertDB' + '\t'+ 'Release Date' + '\t' + 'Version ID').expandtabs(18)
-print('----------' + '\t' + '------------' + '\t' + '------------------------------------').expandtabs(18)
-print('installed   -->' + '\t' + sysdb_releaseDate + '\t' + sysdb_version).expandtabs(18)
-print('available   -->' + '\t' + web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
+print('\n' + 'alertDB' + '\t' + 'Release Date' +
+      '\t' + 'Version ID').expandtabs(18)
+print('----------' + '\t' + '------------' + '\t' +
+      '------------------------------------').expandtabs(18)
+print('installed   -->' + '\t' + sysdb_releaseDate +
+      '\t' + sysdb_version).expandtabs(18)
+print('available   -->' + '\t' +
+      web_data['releaseDate'] + '\t' + web_version).expandtabs(18)
 print('\n')
-print('Database updated:' + '\t' +'\t' + updatedDB).expandtabs(18)
+print('Database updated:' + '\t' + '\t' + updatedDB).expandtabs(18)
 print('Database imported:' + '\t' + dbImported).expandtabs(18)
 print('\n')
 
