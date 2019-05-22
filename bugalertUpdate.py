@@ -64,14 +64,18 @@ password = 'CHANGEME'
 
 warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
-parser.add_argument('--user', required=False, default=username, help='arista.com user')
-parser.add_argument('--password',required=False, default=password, help='password corresponding to the username')
-parser.add_argument('--proxy', default=None, help='IP and port of the proxy server, e.g. 10.10.10.10:4444')
-parser.add_argument('--protocol', default='https', help='http or https, if not specified https is used')
+parser.add_argument('--user', required=False,
+                    default=username, help='arista.com user')
+parser.add_argument('--password', required=False, default=password,
+                    help='password corresponding to the username')
+parser.add_argument('--proxy', default=None,
+                    help='IP and port of the proxy server, e.g. 10.10.10.10:4444')
+parser.add_argument('--protocol', default='https',
+                    help='http or https, if not specified https is used')
 
 args = parser.parse_args()
 
-#Initialize the dictionary for the Proxy server and populate it with the given arguments
+# Initialize the dictionary for the Proxy server and populate it with the given arguments
 proxies = {}
 if args.proxy:
     proxies[args.protocol] = args.proxy
@@ -102,7 +106,7 @@ warnings.filterwarnings("ignore")
 
 jsonpost = {'user_auth': creds}
 
-result = requests.post(url, data=json.dumps(jsonpost),proxies=proxies)
+result = requests.post(url, data=json.dumps(jsonpost), proxies=proxies)
 web_data = json.loads(result.text)
 web_data_final = result.text
 
