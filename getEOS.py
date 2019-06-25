@@ -51,7 +51,7 @@ def main(args, version):
     urls = []
     rn_url = "http://dist/release/EOS-" + version + "/final/doc/"
     home = expanduser("~")
-    outputDir = home + "/Downloads/"
+    outputDir = home + "/Downloads/EOS-" + version + "/"
     failed = False  # Default value to False
     native_vpn_disconnect = False  # Variable to determine if vpn should be disconnected
     vpn_reconnect_counter = 0  # Counter to prevent a forever loop
@@ -81,6 +81,11 @@ def main(args, version):
         if vpncheckStr[0] == "Connected":
             print("VPN Connection is up...\n")
             print ("Downloading EOS:" + version + " To: " + outputDir + "\n")
+            if not os.path.exists(outputDir):
+                os.makedirs(outputDir)
+                print("Directory {0} Created".format(outputDir))
+            else:
+                print("Directory {0} already exists".format(outputDir))
             try:
                 for url, filename in map(None, urls, outputFilename):
                     # Adding in output to notify what file is currently being downloaded
@@ -117,8 +122,12 @@ def main(args, version):
 
             # Check to make sure that the VPN tunnel didn't hit reconnect max tries
             if not failed:
-                print ("Downloading EOS: " + version +
-                       " To: " + outputDir + "\n")
+                print ("Downloading EOS: " + version + " To: " + outputDir + "\n")
+                if not os.path.exists(outputDir):
+                    os.makedirs(outputDir)
+                    print("Directory {0} Created".format(outputDir))
+                else:
+                    print("Directory {0} already exists".format(outputDir))
                 try:
                     for url, filename in map(None, urls, outputFilename):
                         # Adding in output to notify what file is currently being downloaded
