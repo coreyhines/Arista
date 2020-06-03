@@ -95,7 +95,10 @@ def main(args, version):
                     # Adding in output to notify what file is currently being downloaded
                     print(("\n[Starting] Download {}".format(
                         filename.split('/')[::-1][0])))
-                    file = wget.download(url, filename)
+                    try:    
+                        file = wget.download(url, filename)
+                    except: 
+                        print("File Not Found Error ", sys.exc_info()[0])    
                     print(("\n[Completed] File downloaded to " + filename))
                 if args.releaseNotes:
                     release_note = get_latest_rn(rn_url)
@@ -140,7 +143,10 @@ def main(args, version):
                     # Adding in output to notify what file is currently being downloaded
                     print(("\n[Starting] Download {}".format(
                         filename.split('/')[::-1][0])))
-                    file = wget.download(url, filename)
+                    try:
+                        file = wget.download(url, filename)
+                    except:
+                        print("File Not Found Error ", sys.exc_info()[0]) 
                     print(("\n[Completed] File downloaded to " + filename))
                 if args.releaseNotes:
                     release_note = get_latest_rn(rn_url)
@@ -159,15 +165,18 @@ def main(args, version):
     if file:
         concatDict = dict(zip(urls, outputFilename))
         for url, filename in concatDict.items():
-            filesize = os.stat(filename)[6]
-            if filesize < 1024:
-                with open(filename) as myfile:
-                    content = myfile.read()
-                match = re.search(r'<p>(.*).</p>', content)
-                reason = match.group(1)
-                os.remove(filename)
-                print(("\n\nThere was an error downloading: " + url + "\n"))
-                print(("\t" + reason + "\n"))
+            try:
+                filesize = os.stat(filename)[6]
+                if filesize < 1024:
+                    with open(filename) as myfile:
+                        content = myfile.read()
+                    match = re.search(r'<p>(.*).</p>', content)
+                    reason = match.group(1)
+                    os.remove(filename)
+                    print(("\n\nThere was an error downloading: " + url + "\n"))
+                    print(("\t" + reason + "\n"))
+            except:
+                print(("File: " + filename, sys.exc_info()[0]))    
     # Check to see if script opened VPN tunnel, if so disconnect from VPN
     if native_vpn_disconnect:
         print('\nDisconnecting VPN connection')
