@@ -81,37 +81,7 @@ def main(args, version):
         vpncheck = check_output(["scutil", "--nc", "status", vpn_name])
         vpncheckStr = vpncheck.decode("utf-8").split("\n")
         # Check to see if native vpn is connected
-        if vpncheckStr[0] == "Connected":
-            print("VPN Connection is up...\n")
-            print (("Downloading EOS:" + version + " To: " + outputDir + "\n"))
-            if not os.path.exists(outputDir):
-                os.makedirs(outputDir)
-                print(("Directory {0} Created".format(outputDir)))
-            else:
-                print(("Directory {0} already exists".format(outputDir)))
-            try:
-                concatDict = dict(zip(urls, outputFilename))
-                for url, filename in concatDict.items():
-                    # Adding in output to notify what file is currently being downloaded
-                    print(("\n[Starting] Download {}".format(
-                        filename.split('/')[::-1][0])))
-                    try:    
-                        file = wget.download(url, filename)
-                    except: 
-                        print("File Not Found Error ", sys.exc_info()[0])    
-                    print(("\n[Completed] File downloaded to " + filename))
-                if args.releaseNotes:
-                    release_note = get_latest_rn(rn_url)
-                    if release_note:
-                        file = wget.download(
-                            rn_url + release_note, outputDir+release_note)
-                        print(("\nFile downloaded to " + outputDir+release_note))
-            except:
-                failed = True
-                file = None  # Added in so it can be used to evaluate later on
-                print("Unexpected error:", sys.exc_info()[0])
-                raise
-        else:
+        if not vpncheckStr[0] == "Connected":
             print("VPN Connection is down...\n")
             print(("Attempting to connect to {0}".format(vpn_name)))
             check_output(["scutil", "--nc", "start", vpn_name])
@@ -128,8 +98,11 @@ def main(args, version):
                     break
                 else:
                     vpn_reconnect_counter += 1
+        elif vpncheckStr[0] == "Connected":
+            print("VPN Connection is up...\n")
 
             # Check to make sure that the VPN tunnel didn't hit reconnect max tries
+            print(("FAILED is: " + str(failed)))
             if not failed:
               print(("Downloading EOS: " + version + " To: " + outputDir + "\n"))
               if not os.path.exists(outputDir):
@@ -147,7 +120,18 @@ def main(args, version):
                         file = wget.download(url, filename)
                     except:
                         print("File Not Found Error ", sys.exc_info()[0]) 
-                    print(("\n[Completed] File downloaded to " + filename))
+                        try:
+                            filesize = os.stat(filename)[6]
+                            if filesize < 1024:
+                                with open(filename) as myfile:
+                                    content = myfile.read()
+                                match = re.search(r'<p>(.*).</p>', content)
+                                reason = match.group(1)
+                                os.remove(filename)
+                                print(("\n\nThere was an error downloading: " + url + "\n"))
+                                print(("\t" + reason + "\n"))
+                        except:
+                            print(("\n[Completed] File downloaded to " + filename))
                 if args.releaseNotes:
                     release_note = get_latest_rn(rn_url)
                     if release_note:
@@ -159,24 +143,9 @@ def main(args, version):
                 failed = True
                 file = None  # Added in so it can be used to evaluate later on
                 print("Unexpected error:", sys.exc_info()[0])
-            else:
-                print("Unable to start VPN connection:\nEither you are not connected to the internet or you don't have the right VPN name")
+        else:
+            print("Unable to start VPN connection:\nEither you are not connected to the internet or you don't have the right VPN name")
 
-    if file:
-        concatDict = dict(zip(urls, outputFilename))
-        for url, filename in concatDict.items():
-            try:
-                filesize = os.stat(filename)[6]
-                if filesize < 1024:
-                    with open(filename) as myfile:
-                        content = myfile.read()
-                    match = re.search(r'<p>(.*).</p>', content)
-                    reason = match.group(1)
-                    os.remove(filename)
-                    print(("\n\nThere was an error downloading: " + url + "\n"))
-                    print(("\t" + reason + "\n"))
-            except:
-                print(("File: " + filename, sys.exc_info()[0]))    
     # Check to see if script opened VPN tunnel, if so disconnect from VPN
     if native_vpn_disconnect:
         print('\nDisconnecting VPN connection')
