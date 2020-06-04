@@ -38,10 +38,16 @@ def get_latest_rn(r_url):
     all_release_notes = {}
     content = urllib.request.urlopen(r_url).read().decode("utf-8").split('\n')
     for r1 in content:
-        if '-RN-v' in r1:
+        if '-RN' in r1 and ".pdf" in r1:
             release_file = r1[r1.find('">E')+2:r1.find('</a>')]
-            ver = release_file[release_file.find(
-                '-v')+2:release_file.find('.pdf')]
+            if '-v' in release_file:
+                ver = release_file[release_file.find(
+                 '-v')+2:release_file.find('.pdf')]
+            else:
+                ver = release_file[release_file.find(
+                 '-RN')+3:release_file.find('.pdf')]
+            if not ver:
+                ver="0.0"
             all_release_notes[ver] = release_file
     latest_ver = 0.0
     for r1 in all_release_notes:
@@ -119,8 +125,8 @@ def main(args, version):
                         file = wget.download(url, filename)
                     except:
                         print(("File Not Found Error: " + filename)) 
-                    if file:
-                        try:
+                    try:
+                        if file:
                             filesize = os.stat(filename)[6]
                             if filesize < 1024:
                                 with open(filename) as myfile:
@@ -132,22 +138,25 @@ def main(args, version):
                                 print(("\t" + reason + "\n"))
                             else:
                                 print(("\n[Completed] File downloaded to " + filename))
-                        except:
-                            print(("File: " + filename + " Was not downloaded"))
+                    except:
+                        print(("File: " + filename + " Was not downloaded"))
             except:
                 failed = True
                 file = None  # Added in so it can be used to evaluate later on
                 print("Unexpected error:", sys.exc_info()[0])
 
             if args.releaseNotes:
-                release_note = get_latest_rn(rn_url)
-                if release_note:
-                    file = wget.download(rn_url + 
-                            release_note, outputDir+release_note)
-                    print(("\nFile downloaded to " +
-                            outputDir+release_note))
-                else:
-                    print(("File: " + rn_url + release_note + " Was not downloaded")) 
+                try:
+                    release_note = get_latest_rn(rn_url)
+                    if release_note:
+                        file = wget.download(rn_url + 
+                                release_note, outputDir+release_note)
+                        print(("\nFile downloaded to " +
+                                outputDir+release_note))
+                except:
+                    print(("UNABLE TO FIND RELEASE NOTES AT: " + rn_url)) 
+            #else:
+            #    print(("Release Notes File: " + rn_url + " Was not downloaded")) 
     else:
         print("Unable to start VPN connection:\nEither you are not connected to the internet or you don't have the right VPN name")
 
