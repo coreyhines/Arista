@@ -78,7 +78,6 @@ def main(args, version):
         if image == "EOS.vmdk":
             image = "EOS"
             ext = ".vmdk"
-
         outputFilename.append(outputDir + image + "-" + version + ext)
 
     # Check to see if native OSX vpn is configured
