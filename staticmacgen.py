@@ -20,6 +20,9 @@ def main():
   parser.add_argument(
       "-d", "--device", type=str, default="",
       help="specify an EOS device which static MACs are to applied", required=True)
+  parser.add_argument(
+      "-u", "--undo", action='store_true',
+      help="specify --undo, to remove applied static mac addresses", required=False)
   args = parser.parse_args()
   n = 4 
   rand = ''.join(random.choices(string.ascii_uppercase +
@@ -27,6 +30,7 @@ def main():
   session = args.session + "-" + rand
   file = args.file
   hostname = args.device
+  undo = args.undo
 
   _create_unverified_https_context = ssl._create_unverified_context
   ssl._create_default_https_context = _create_unverified_https_context
@@ -46,7 +50,11 @@ def main():
     vlan = bits[1]
     intf = bits[2]
     
-    result = device.runCmds(1, ['enable', 'configure session {0}'.format(session), 'mac address-table static {0}'.format(macaddr) + ' vlan {0}'.format(vlan) + ' interface {0}'.format(intf)])
+    if undo == True:
+      result = device.runCmds(1, ['enable', 'configure session {0}'.format(session), 'no mac address-table static {0}'.format(macaddr) + ' vlan {0}'.format(vlan) + ' interface {0}'.format(intf)])
+    else:
+      result = device.runCmds(1, ['enable', 'configure session {0}'.format(session), 'mac address-table static {0}'.format(macaddr) + ' vlan {0}'.format(vlan) + ' interface {0}'.format(intf)])
+
   
   result2 = device.runCmds(1, ['enable', 'configure session {0}'.format(session) + ' commit'])
 
