@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# import the client library
-#import pyeapi
 from jsonrpclib import Server
 import json
 import ssl
