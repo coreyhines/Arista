@@ -65,10 +65,8 @@ def main():
         result = device.runCmds(1, ['enable', 'configure session {0}'.format(session), 'mac address-table static {0}'.format(macaddr) + ' vlan {0}'.format(vlan) + ' interface {0}'.format(intf)])
   except: 
     print("something went wrong, check password\n\n")
-
   
   result2 = device.runCmds(1, ['enable', 'configure session {0}'.format(session) + ' commit'])
-
 
 if __name__ == '__main__':
     main()
