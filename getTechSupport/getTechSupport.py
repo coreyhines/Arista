@@ -7,7 +7,7 @@ from rcvpapi.rcvpapi import *
 
 cvp_ip = "10.0.5.107"
 cvp_user = "cvpadmin"
-cvp_user_pwd = '!ndenter=munkeyme|'
+cvp_user_pwd = ''
 switches = []
 showtech = {}
 
